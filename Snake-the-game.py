@@ -1,33 +1,33 @@
 from tkinter import *
 import random
 
-WIDTH = 80
-HEIGHT = 600
-SEG_SIZE = 20
+Width = 800
+Height = 600
+Seg_size = 20
 
-IN_GAME = True
+In_game = True
 
 def create_block():
-    global BLOCK
-    posx = SEG_SIZE * random.randint(1, (WIDTH - SEG_SIZE) / SEG_SIZE)
-    posy = SEG_SIZE * random.randint(1, (HEIGHT - SEG_SIZE) / SEG_SIZE)
-    BLOCK = c.create_oval(posx, posy,
-                          posx + SEG_SIZE, posy + SEG_SIZE,
+    global BlocK
+    posx = Seg_size * random.randint(1, (Width - Seg_size) / Seg_size)
+    posy = Seg_size * random.randint(1, (Height - Seg_size) / Seg_size)
+    BlocK = c.create_oval(posx, posy,
+                          posx + Seg_size, posy + Seg_size,
                           fill="red")
     
 class Score(object):
 
     def __init__(self):
         self.score = 0
-        self.x = 55
+        self.x = 65
         self.y = 15
-        c.create_text(self.x, self.y, text="Счёт: {}".format(self.score), font="Arial 20",
+        c.create_text(self.x, self.y, text="SCORE: {}".format(self.score), font="Arial 20",
                       fill="black", tag="score", state='hidden')
         
     def increment(self):
         c.delete("score")
         self.score += 1
-        c.create_text(self.x, self.y, text="Счёт: {}".format(self.score), font="Arial 20",
+        c.create_text(self.x, self.y, text="SCORE: {}".format(self.score), font="Arial 20",
                       fill="white", tag="score")
         
     def reset(self):
@@ -35,25 +35,25 @@ class Score(object):
         self.score = 0
 
 def main():
-    global IN_GAME
-    if IN_GAME:
+    global In_game
+    if In_game:
         s.move()
 
         head_coords = c.coords(s.segments[-1].instance)
         x1, y1, x2, y2 = head_coords
 
-        if x2 > WIDTH or x1 < 0 or y1 < 0 or y2 > HEIGHT:
-            IN_GAME = False
+        if x2 > Width or x1 < 0 or y1 < 0 or y2 > Height:
+            In_game = False
 
-        elif head_coords == c.coords(BLOCK):
+        elif head_coords == c.coords(BlocK):
             s.add_segment()
-            c.delete(BLOCK)
+            c.delete(BlocK)
             create_block()
              
         else:
             for index in range(len(s.segments) - 1):
                 if head_coords == c.coords(s.segments[index].instance):
-                    IN_GAME = False
+                    In_game = False
 
         root.after(100, main)
         
@@ -64,7 +64,7 @@ def main():
 class Segment(object):
     def __init__(self, x, y):
         self.instance = c.create_rectangle(x, y,
-                                           x + SEG_SIZE, y + SEG_SIZE,
+                                           x + Seg_size, y + Seg_size,
                                            fill="yellow")
                                            
 class Snake(object):
@@ -84,14 +84,14 @@ class Snake(object):
 
         x1, y1, x2, y2 = c.coords(self.segments[-2].instance)
         c.coords(self.segments[-1].instance,
-                 x1 + self.vector[0] * SEG_SIZE, y1 + self.vector[1] * SEG_SIZE,
-                 x2 + self.vector[0] * SEG_SIZE, y2 + self.vector[1] * SEG_SIZE)
+                 x1 + self.vector[0] * Seg_size, y1 + self.vector[1] * Seg_size,
+                 x2 + self.vector[0] * Seg_size, y2 + self.vector[1] * Seg_size)
 
     def add_segment(self):
         score.increment()
         last_seg = c.coords(self.segments[0].instance)
-        x = last_seg[2] - SEG_SIZE
-        y = last_seg[3] - SEG_SIZE
+        x = last_seg[2] - Seg_size
+        y = last_seg[3] - Seg_size
         self.segments.insert(0, Segment(x, y))
 
     def change_direction(self, event):
@@ -104,13 +104,13 @@ class Snake(object):
 
 def set_state(item, state):
     c.itemconfigure(item, state=state)
-    c.itemconfigure(BLOCK, state='hidden')
+    c.itemconfigure(BlocK, state='hidden')
 
 def clicked(event):
-    global IN_GAME
+    global In_game
     s.reset_snake()
-    IN_GAME = True
-    c.delete(BLOCK)
+    In_game = True
+    c.delete(BlocK)
     score.reset()
     c.itemconfigure(restart_text, state='hidden')
     c.itemconfigure(game_over_text, state='hidden')
@@ -125,15 +125,15 @@ def start_game():
     main()
 
 def create_snake():
-    segments = [Segment(SEG_SIZE, SEG_SIZE),
-                Segment(SEG_SIZE * 2, SEG_SIZE),
-                Segment(SEG_SIZE * 3, SEG_SIZE)]
+    segments = [Segment(Seg_size, Seg_size),
+                Segment(Seg_size * 2, Seg_size),
+                Segment(Seg_size * 3, Seg_size)]
     return Snake(segments)
 
 root = Tk()
-root.title("Змейка")
+root.title("Snake-the-game")
 
-c = Canvas(root, width=WIDTH, height=HEIGHT, bg="green")
+c = Canvas(root, width=Width, height=Height, bg="green")
 c.grid()
 
 c.create_line(30, 50, 20, 65, fill='black')
@@ -264,14 +264,14 @@ c.create_line(480, 350, 480, 365, fill='black')
 
 c.focus_set()
 
-game_over_text = c.create_text(WIDTH / 2, HEIGHT / 2, text="Ты проиграл!",
+game_over_text = c.create_text(Width / 2, Height / 2, text="GAME OVER!",
                                font='Arial 20', fill='red',
                                state='hidden')
                                
-restart_text = c.create_text(WIDTH / 2, HEIGHT - HEIGHT / 3,
+restart_text = c.create_text(Width / 2, Height - Height / 3,
                              font='Arial 25',
                              fill='light green',
-                             text="Начать новую игру",
+                             text="RESTART",
                              state='hidden')
 
 c.tag_bind(restart_text, "<Button-1>", clicked)
